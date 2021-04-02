@@ -34,7 +34,7 @@ def get_titles_from_search_results(filename):
         author = book.find("div", class_ = "authorName__container").text
         author = author.strip()
 
-        bookList.append((title.strip('\n'), author.strip('\n')))
+        bookList.append((title, author))
 
     
     return bookList
@@ -95,7 +95,7 @@ def get_book_summary(book_url):
     Page = Page.split(" ")
     numPages = int(Page[0])
     
-    return (title.strip('\n'), author.strip('\n'), numPages.strip('\n'))
+    return (title, author, numPages)
     
 
 def summarize_best_books(filepath):
@@ -260,7 +260,7 @@ class TestCases(unittest.TestCase):
             self.assertTrue(isinstance(url, str))
             self.assertTrue(url.startswith("https://www.goodreads.com//book/show/"))
 
-    '''
+    
     def test_get_book_summary(self):
 
         # create a local variable – summaries – a list containing the results from get_book_summary()
@@ -291,7 +291,7 @@ class TestCases(unittest.TestCase):
 
         # check that the first book in the search has 337 pages
         self.assertEqual(summaries[0][2], 337)
-        '''
+        
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
