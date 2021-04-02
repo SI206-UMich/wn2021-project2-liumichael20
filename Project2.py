@@ -31,7 +31,7 @@ def get_titles_from_search_results(filename):
         title = book.find("a", class_ = "bookTitle").find("span").text
         title = title.strip()
 
-        author = book.find("a", class_ = "authorName").find("span").text
+        author = book.find("div", class_ = "authorName__container").text
         author = author.strip()
 
         bookList.append((title.strip('\n'), author.strip('\n')))
@@ -165,7 +165,7 @@ def write_csv(data, filename):
     This function should not return anything.
     """
 
-    source_dir = os.path.dirname(__file__) #<-- directory name
+    '''source_dir = os.path.dirname(__file__) #<-- directory name
     full_path = os.path.join(source_dir, filename)
 
     csvList = [[]]
@@ -176,6 +176,20 @@ def write_csv(data, filename):
     with open(full_path, 'w') as fout:
         writer = csv.writer(fout, delimiter = ',')
         for line in csvList:
+            writer.writerow(line)'''
+
+    '''with open(full_path, 'w') as fout:
+        header = ["Book Title", "Author Name"]
+        writer = csv.writer(fout)
+        writer.writerow(header)
+        for line in data:
+            writer.writerow(line)'''
+    
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), filename), "w") as fout:
+        header = ["Book title","Author Name"]
+        writer = csv.writer(fout, delimiter = ',')
+        writer.writerow(header)
+        for line in data:
             writer.writerow(line)
 
     '''with open(full_path, 'w', newline = '', encoding = 'utf-8') as fout:
@@ -316,21 +330,25 @@ class TestCases(unittest.TestCase):
         full_path = os.path.join(source_dir, "test.csv")
 
         inFile = open(full_path, "r")
-        csv_lines = inFile.readlines()
-        inFile.close()
+        csv_lines = csv.reader(inFile)
         
+
+        csv_list = []
+
         for line in csv_lines:
-            line = line.strip()
+            csv_list.append(line)
 
         # check that there are 21 lines in the csv
-        self.assertEqual(len(csv_lines), 21)
+        self.assertEqual(len(csv_list), 21)
         # check that the header row is correct
-        print(csv_lines[0])
-        self.assertEqual(csv_lines[0], "Book title,Author Name")
+        print(csv_list[0])
+        self.assertEqual(csv_list[0], ["Book title","Author Name"])
         # check that the next row is 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'
-        self.assertEqual(csv_lines[0], "'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'")
+        self.assertEqual(csv_list[1], ['Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'])
 
         # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
+        self.assertEqual(csv_list[20], ['Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'])
+        inFile.close()
         
 
 
